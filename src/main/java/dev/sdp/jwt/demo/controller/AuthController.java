@@ -1,9 +1,12 @@
 package dev.sdp.jwt.demo.controller;
 
 import dev.sdp.jwt.demo.model.LoginRequest;
+import dev.sdp.jwt.demo.model.RestResponse;
 import dev.sdp.jwt.demo.service.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,12 +25,12 @@ public class AuthController {
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
     }
-    @PostMapping("/token")
-    public String token(@RequestBody LoginRequest loginRequest) {
+    @PostMapping(value = "/token", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RestResponse> token(@RequestBody LoginRequest loginRequest) {
         Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(),loginRequest.password()));
         LOG.debug("token requested for user: '{}'",authentication.getName());
         String token=tokenService.generateToken(authentication);
         LOG.debug("Token granted: '{}'",token);
-        return token;
+        return ResponseEntity.ok(new RestResponse(token));
     }
 }

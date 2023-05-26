@@ -29,8 +29,9 @@ class HomeControllerTest {
     }
     @Test
     void rootWhenAuthenticatedThenSaysHelloUser()throws Exception{
-        MvcResult result= this.mvc.perform(post("/token").with(httpBasic("francis","francis"))).andExpect(status().isOk()).andReturn();
-
+        MvcResult result= this.mvc.perform(post("/token")
+                .with(httpBasic("francis","francis"))).
+                andExpect(status().isOk()).andReturn();
         String token = result.getResponse().getContentAsString();
         this.mvc.perform(get("/").header("Authorization", "Bearer "+token))
                 .andExpect(content().string("Hello my name is francis"));
